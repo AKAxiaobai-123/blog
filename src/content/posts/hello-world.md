@@ -1,6 +1,7 @@
 ---
 title: 你好，博客
 description: 第一篇用来占位的示例文章，介绍这个博客准备记录什么。
+category: 随笔
 date: 2026-08-01
 tags: ["随笔", "博客"]
 draft: false

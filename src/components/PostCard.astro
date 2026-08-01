@@ -5,11 +5,12 @@ interface Props {
   slug: string;
   title: string;
   description: string;
+  category: string;
   date: Date;
   tags: string[];
 }
 
-const { slug, title, description, date, tags } = Astro.props;
+const { slug, title, description, category, date, tags } = Astro.props;
 ---
 
 <article class="post-card">
@@ -17,6 +18,7 @@ const { slug, title, description, date, tags } = Astro.props;
     <time class="post-card-date" datetime={date.toISOString()}>{formatDate(date)}</time>
     <h3 class="post-card-title">{title}</h3>
     <p class="post-card-description">{description}</p>
+    <span class="post-card-category">{category}</span>
     {
       tags.length > 0 && (
         <ul class="tag-list" aria-label="标签">

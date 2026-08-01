@@ -1,6 +1,7 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import PostCard from '../../components/PostCard.astro';
+import SidePanel from '../../components/SidePanel.astro';
 import { getAllPosts } from '../../lib/posts';
 
 const posts = await getAllPosts();
@@ -12,27 +13,33 @@ const posts = await getAllPosts();
     <p>所有已发布的内容，按时间从新到旧排列。</p>
   </section>
 
-  <section class="page-section container">
-    {
-      posts.length > 0 ? (
-        <div class="post-grid">
-          {
-            posts.map((post) => (
-              <PostCard
-                slug={post.slug}
-                title={post.title}
-                description={post.description}
-                date={post.date}
-                tags={post.tags}
-              />
-            ))
-          }
-        </div>
-      ) : (
-        <div class="empty-state">
-          <p>还没有文章。</p>
-        </div>
-      )
-    }
-  </section>
+  <div class="container">
+    <div class="content-grid">
+      <section class="page-section content-main">
+        {
+          posts.length > 0 ? (
+            <div class="post-grid">
+              {
+                posts.map((post) => (
+                  <PostCard
+                    slug={post.slug}
+                    title={post.title}
+                    description={post.description}
+                    category={post.category}
+                    date={post.date}
+                    tags={post.tags}
+                  />
+                ))
+              }
+            </div>
+          ) : (
+            <div class="empty-state">
+              <p>还没有文章。</p>
+            </div>
+          )
+        }
+      </section>
+      <SidePanel />
+    </div>
+  </div>
 </BaseLayout>

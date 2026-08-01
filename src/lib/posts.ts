@@ -4,6 +4,7 @@ export interface Post {
   slug: string;
   title: string;
   description: string;
+  category: string;
   date: Date;
   tags: string[];
 }
@@ -15,6 +16,7 @@ export async function getAllPosts(): Promise<Post[]> {
       slug: entry.id,
       title: entry.data.title,
       description: entry.data.description,
+      category: entry.data.category,
       date: entry.data.date,
       tags: entry.data.tags,
     }))
@@ -30,11 +32,16 @@ export function formatDate(date: Date): string {
 }
 
 export function readingTime(body: string): number {
-  const cjkChars = (body.match(/[\u4e00-\u9fff]/g) ?? []).length;
-  const words = body
+  const { cjk, latin } = countWords(body);
+  return Math.max(1, Math.ceil(cjk / 400 + latin / 200));
+}
+
+export function countWords(body: string): { cjk: number; latin: number } {
+  const cjk = (body.match(/[\u4e00-\u9fff]/g) ?? []).length;
+  const latin = body
     .replace(/[\u4e00-\u9fff]/g, ' ')
     .trim()
     .split(/\s+/)
     .filter(Boolean).length;
-  return Math.max(1, Math.ceil(cjkChars / 400 + words / 200));
+  return { cjk, latin };
 }

@@ -1,6 +1,7 @@
 ---
 title: 用 Astro 搭一个安静的静态博客
 description: 关于内容、构建和部署的简单记录。
+category: 前端
 date: 2026-07-28
 tags: ["前端", "Astro"]
 draft: false

@@ -1,0 +1,107 @@
+---
+import { getCollection } from 'astro:content';
+import { countWords, getAllPosts } from '../lib/posts';
+
+const posts = await getAllPosts();
+const entries = await getCollection('posts', ({ data }) => !data.draft);
+
+const totalWords = entries.reduce((sum, entry) => {
+  const { cjk, latin } = countWords(entry.body ?? '');
+  return sum + cjk + latin;
+}, 0);
+
+const categoryCounts = new Map<string, number>();
+const tagCounts = new Map<string, number>();
+
+for (const post of posts) {
+  categoryCounts.set(post.category, (categoryCounts.get(post.category) ?? 0) + 1);
+  for (const tag of post.tags) {
+    tagCounts.set(tag, (tagCounts.get(tag) ?? 0) + 1);
+  }
+}
+
+const categories = [...categoryCounts.entries()].sort(
+  (a, b) => b[1] - a[1] || a[0].localeCompare(b[0]),
+);
+const tags = [...tagCounts.entries()].sort(
+  (a, b) => b[1] - a[1] || a[0].localeCompare(b[0]),
+);
+
+const formatNumber = (value: number) => value.toLocaleString('zh-CN');
+---
+
+<aside class="side-panel" aria-label="站点信息">
+  <section class="side-card">
+    <h2 class="side-title">站点统计</h2>
+    {
+      posts.length > 0 ? (
+        <dl class="side-stats">
+          <div>
+            <dt>文章</dt>
+            <dd>{formatNumber(posts.length)}</dd>
+          </div>
+          <div>
+            <dt>分类</dt>
+            <dd>{formatNumber(categories.length)}</dd>
+          </div>
+          <div>
+            <dt>标签</dt>
+            <dd>{formatNumber(tags.length)}</dd>
+          </div>
+          <div>
+            <dt>字数</dt>
+            <dd>{formatNumber(totalWords)}</dd>
+          </div>
+        </dl>
+      ) : (
+        <p class="side-empty">还没有可统计的内容。</p>
+      )
+    }
+  </section>
+
+  <section class="side-card">
+    <h2 class="side-title">分类</h2>
+    {
+      categories.length > 0 ? (
+        <ul class="side-list">
+          {
+            categories.map(([name, count]) => (
+              <li>
+                <a
+                  href={`/archive/?category=${encodeURIComponent(name)}`}
+                >
+                  <span>{name}</span>
+                  <span class="side-count">{count}</span>
+                </a>
+              </li>
+            ))
+          }
+        </ul>
+      ) : (
+        <p class="side-empty">暂无分类</p>
+      )
+    }
+  </section>
+
+  <section class="side-card">
+    <h2 class="side-title">标签</h2>
+    {
+      tags.length > 0 ? (
+        <div class="side-tags">
+          {
+            tags.map(([name, count]) => (
+              <a
+                href={`/archive/?tag=${encodeURIComponent(name)}`}
+              >
+                <span>{name}</span>
+                <span>{count}</span>
+              </a>
+            ))
+          }
+        </div>
+      ) : (
+        <p class="side-empty">暂无标签</p>
+      )
+    }
+  </section>
+</aside>

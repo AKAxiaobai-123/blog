@@ -11,12 +11,16 @@
 - **WHEN** 开发者修改 `tokens.css` 中的令牌
 - **THEN** 使用该令牌的组件随之更新
 
-### Requirement: macOS 风格视觉
-站点 SHALL 使用系统字体栈、黑白灰为主色的克制配色、单一强调色、8px 以内的小圆角、细边框与轻阴影，以及顶栏毛玻璃效果。
+### Requirement: Firefly 参考视觉
+站点 SHALL 参考 Firefly 主题的清新视觉：以绿松石色为单一强调色、浅色与深色两套主题、全宽首页 banner、16px 卡片圆角、毛玻璃顶栏，以及克制的边框与阴影。
 
 #### Scenario: 页面整体风格
 - **WHEN** 用户浏览任意页面
-- **THEN** 页面呈现以留白、黑白灰和单个强调色为主的 macOS 风格，不使用大面积渐变或高饱和配色
+- **THEN** 页面呈现以留白、绿松石强调色和卡片化布局为主的 Firefly 清新风格
+
+#### Scenario: 首页 banner
+- **WHEN** 用户访问首页
+- **THEN** 首页顶部展示全宽 banner，包含主题文案和背景视觉，移动端高度收缩且文字可读
 
 #### Scenario: 浏览器不支持毛玻璃
 - **WHEN** 浏览器不支持 `backdrop-filter`

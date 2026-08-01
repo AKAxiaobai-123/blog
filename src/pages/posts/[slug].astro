@@ -38,6 +38,7 @@ const tocHeadings = headings.filter((heading) => heading.depth >= 2 && heading.d
         <header class="article-header">
           <div class="article-meta">
             <time datetime={entry.data.date.toISOString()}>{formatDate(entry.data.date)}</time>
+            <span>{entry.data.category}</span>
             <span>{minutes} 分钟阅读</span>
             {
               entry.data.tags.length > 0 && (

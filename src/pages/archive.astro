@@ -1,5 +1,6 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import SidePanel from '../components/SidePanel.astro';
 import { getAllPosts, formatDate } from '../lib/posts';
 
 const posts = await getAllPosts();
@@ -21,32 +22,95 @@ const groups = [...years.entries()].sort((a, b) => b[0].localeCompare(a[0]));
     <p>按年份整理所有文章，回看每一段记录。</p>
   </section>
 
-  <section class="page-section container" style="max-width: var(--content-width)">
-    {
-      groups.length > 0 ? (
-        groups.map(([year, items]) => (
-          <div class="archive-year">
-            <div class="archive-year-header">
-              <h2>{year}</h2>
-              <span>{items.length} 篇文章</span>
-            </div>
-            <ul class="archive-list">
-              {
-                items.map((post) => (
-                  <li>
-                    <time datetime={post.date.toISOString()}>{formatDate(post.date)}</time>
-                    <a href={`/posts/${post.slug}/`}>{post.title}</a>
-                  </li>
-                ))
-              }
-            </ul>
-          </div>
-        ))
-      ) : (
-        <div class="empty-state">
-          <p>还没有文章可以归档。</p>
+  <div class="container">
+    <div class="content-grid">
+      <section class="page-section content-main">
+        <div class="archive-filter" data-archive-filter hidden>
+          <p>
+            <strong data-filter-label></strong>
+            <span data-filter-count></span>
+          </p>
+          <a href="/archive/">清除筛选</a>
         </div>
-      )
-    }
-  </section>
+
+        {
+          groups.length > 0 ? (
+            groups.map(([year, items]) => (
+              <div class="archive-year">
+                <div class="archive-year-header">
+                  <h2>{year}</h2>
+                  <span>{items.length} 篇文章</span>
+                </div>
+                <ul class="archive-list">
+                  {
+                    items.map((post) => (
+                      <li data-category={post.category} data-tags={post.tags.join(',')}>
+                        <time datetime={post.date.toISOString()}>{formatDate(post.date)}</time>
+                        <a href={`/posts/${post.slug}/`}>{post.title}</a>
+                      </li>
+                    ))
+                  }
+                </ul>
+              </div>
+            ))
+          ) : (
+            <div class="empty-state" data-empty-all>
+              <p>还没有文章可以归档。</p>
+            </div>
+          )
+        }
+
+        <div class="empty-state" data-filter-empty hidden>
+          <p>这个筛选条件下还没有文章。</p>
+          <a class="empty-link" href="/archive/">查看全部归档</a>
+        </div>
+      </section>
+
+      <SidePanel />
+    </div>
+  </div>
 </BaseLayout>
+
+<script is:inline>
+  (() => {
+    const params = new URLSearchParams(location.search);
+    const category = params.get('category');
+    const tag = params.get('tag');
+    if (!category && !tag) return;
+
+    const filterBar = document.querySelector('[data-archive-filter]');
+    const label = document.querySelector('[data-filter-label]');
+    const count = document.querySelector('[data-filter-count]');
+    const empty = document.querySelector('[data-filter-empty]');
+    const items = Array.from(document.querySelectorAll('.archive-list li'));
+    const years = Array.from(document.querySelectorAll('.archive-year'));
+
+    let visible = 0;
+    items.forEach((item) => {
+      const itemCategory = item.dataset.category ?? '';
+      const itemTags = (item.dataset.tags ?? '').split(',');
+      const matched =
+        (!category || itemCategory === category) && (!tag || itemTags.includes(tag));
+      item.hidden = !matched;
+      if (matched) visible += 1;
+    });
+
+    years.forEach((year) => {
+      year.hidden = year.querySelectorAll('.archive-list li:not([hidden])').length === 0;
+    });
+
+    if (label) label.textContent = category ? `分类 · ${category}` : `标签 · ${tag}`;
+    if (count) count.textContent = `${visible} 篇文章`;
+    if (filterBar) filterBar.hidden = false;
+    if (empty) empty.hidden = visible > 0;
+
+    document.querySelectorAll('.side-list a, .side-tags a').forEach((link) => {
+      const href = new URL(link.getAttribute('href') || '', location.href);
+      const linkCategory = href.searchParams.get('category');
+      const linkTag = href.searchParams.get('tag');
+      if ((category && linkCategory === category) || (tag && linkTag === tag)) {
+        link.classList.add('is-active');
+      }
+    });
+  })();
+</script>
