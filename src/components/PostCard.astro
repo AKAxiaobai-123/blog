@@ -1,0 +1,28 @@
+---
+import { formatDate } from '../lib/posts';
+
+interface Props {
+  slug: string;
+  title: string;
+  description: string;
+  date: Date;
+  tags: string[];
+}
+
+const { slug, title, description, date, tags } = Astro.props;
+---
+
+<article class="post-card">
+  <a class="post-card-link" href={`/posts/${slug}/`}>
+    <time class="post-card-date" datetime={date.toISOString()}>{formatDate(date)}</time>
+    <h3 class="post-card-title">{title}</h3>
+    <p class="post-card-description">{description}</p>
+    {
+      tags.length > 0 && (
+        <ul class="tag-list" aria-label="标签">
+          {tags.map((tag) => <li class="tag">{tag}</li>)}
+        </ul>
+      )
+    }
+  </a>
+</article>

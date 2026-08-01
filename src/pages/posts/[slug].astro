@@ -1,0 +1,101 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { getCollection, render } from 'astro:content';
+import { getAllPosts, formatDate, readingTime } from '../../lib/posts';
+
+interface Props {
+  slug: string;
+}
+
+export async function getStaticPaths() {
+  const posts = await getAllPosts();
+  return posts.map((post) => ({
+    params: { slug: post.slug },
+    props: { slug: post.slug },
+  }));
+}
+
+const { slug } = Astro.props;
+const posts = await getAllPosts();
+const [entry] = await getCollection('posts', ({ id }) => id === slug);
+
+if (!entry) {
+  return Astro.redirect('/404');
+}
+
+const { Content, headings } = await render(entry);
+const minutes = readingTime(entry.body ?? '');
+const currentIndex = posts.findIndex((post) => post.slug === slug);
+const older = currentIndex >= 0 ? posts[currentIndex + 1] : undefined;
+const newer = currentIndex > 0 ? posts[currentIndex - 1] : undefined;
+const tocHeadings = headings.filter((heading) => heading.depth >= 2 && heading.depth <= 3);
+---
+
+<BaseLayout title={`${entry.data.title} · Blog`} description={entry.data.description}>
+  <div class="container">
+    <article class="article-layout">
+      <div>
+        <header class="article-header">
+          <div class="article-meta">
+            <time datetime={entry.data.date.toISOString()}>{formatDate(entry.data.date)}</time>
+            <span>{minutes} 分钟阅读</span>
+            {
+              entry.data.tags.length > 0 && (
+                <span>{entry.data.tags.join(' · ')}</span>
+              )
+            }
+          </div>
+          <h1>{entry.data.title}</h1>
+          <p>{entry.data.description}</p>
+        </header>
+
+        <div class="prose">
+          <Content />
+        </div>
+
+        {
+          (older || newer) && (
+            <nav class="pager" aria-label="文章前后篇">
+              {
+                older && (
+                  <a class="pager-link" href={`/posts/${older.slug}/`}>
+                    <span>上一篇</span>
+                    <strong>{older.title}</strong>
+                  </a>
+                )
+              }
+              {
+                newer && (
+                  <a class="pager-link" style="text-align: right" href={`/posts/${newer.slug}/`}>
+                    <span>下一篇</span>
+                    <strong>{newer.title}</strong>
+                  </a>
+                )
+              }
+            </nav>
+          )
+        }
+      </div>
+
+      {
+        tocHeadings.length >= 2 && (
+          <aside class="article-toc">
+            <h2>目录</h2>
+            <nav aria-label="文章目录">
+              {
+                tocHeadings.map((heading) => (
+                  <a
+                    href={`#${heading.slug}`}
+                    style={heading.depth === 3 ? 'padding-left: var(--space-4)' : undefined}
+                  >
+                    {heading.text}
+                  </a>
+                ))
+              }
+            </nav>
+          </aside>
+        )
+      }
+    </article>
+  </div>
+</BaseLayout>

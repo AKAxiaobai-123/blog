@@ -1,0 +1,52 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { getAllPosts, formatDate } from '../lib/posts';
+
+const posts = await getAllPosts();
+const years = new Map<string, typeof posts>();
+
+for (const post of posts) {
+  const year = String(post.date.getFullYear());
+  const group = years.get(year) ?? [];
+  group.push(post);
+  years.set(year, group);
+}
+
+const groups = [...years.entries()].sort((a, b) => b[0].localeCompare(a[0]));
+---
+
+<BaseLayout title="归档 · Blog" description="博客文章按年份归档。">
+  <section class="page-hero container">
+    <h1>归档</h1>
+    <p>按年份整理所有文章，回看每一段记录。</p>
+  </section>
+
+  <section class="page-section container" style="max-width: var(--content-width)">
+    {
+      groups.length > 0 ? (
+        groups.map(([year, items]) => (
+          <div class="archive-year">
+            <div class="archive-year-header">
+              <h2>{year}</h2>
+              <span>{items.length} 篇文章</span>
+            </div>
+            <ul class="archive-list">
+              {
+                items.map((post) => (
+                  <li>
+                    <time datetime={post.date.toISOString()}>{formatDate(post.date)}</time>
+                    <a href={`/posts/${post.slug}/`}>{post.title}</a>
+                  </li>
+                ))
+              }
+            </ul>
+          </div>
+        ))
+      ) : (
+        <div class="empty-state">
+          <p>还没有文章可以归档。</p>
+        </div>
+      )
+    }
+  </section>
+</BaseLayout>

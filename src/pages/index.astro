@@ -1,0 +1,65 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import DemoDeck from '../components/DemoDeck.astro';
+import PostCard from '../components/PostCard.astro';
+import { getAllPosts } from '../lib/posts';
+
+const posts = await getAllPosts();
+const latest = posts.slice(0, 5);
+---
+
+<BaseLayout title="Blog · 安静地记录" description="一个安静、耐看、导览清晰的个人博客。">
+  <section class="page-hero container">
+    <p class="eyebrow">主题 · 把日子叠起来</p>
+    <h1>把日子，一层一层叠起来。</h1>
+    <p>每篇文章是一层日子。先在这里翻一翻今天的一层，再往里走进完整的故事。</p>
+  </section>
+
+  <div class="container">
+    <DemoDeck />
+  </div>
+
+  <section class="page-section container">
+    <div class="story-heading">
+      <div>
+        <p class="eyebrow">第二章 · 最近写下</p>
+        <h2>今天的一层</h2>
+      </div>
+      <a href="/posts/">全部文章 →</a>
+    </div>
+    {
+      latest.length > 0 ? (
+        <div class="post-grid">
+          {
+            latest.map((post) => (
+              <PostCard
+                slug={post.slug}
+                title={post.title}
+                description={post.description}
+                date={post.date}
+                tags={post.tags}
+              />
+            ))
+          }
+        </div>
+      ) : (
+        <div class="empty-state">
+          <p>还没有文章，等第一篇内容发布后会展示在这里。</p>
+        </div>
+      )
+    }
+  </section>
+
+  <section class="page-section container" style="padding-top: 0">
+    <div class="story-heading">
+      <div>
+        <p class="eyebrow">第三章 · 往回看</p>
+        <h2>过去的日子</h2>
+      </div>
+      <a href="/archive/">进入归档 →</a>
+    </div>
+    <div class="story-outro">
+      <p>所有写下的内容都会按时间收进归档，像一叠整理好的旧照片。</p>
+    </div>
+  </section>
+</BaseLayout>
