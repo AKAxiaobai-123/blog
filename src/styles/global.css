@@ -151,13 +151,21 @@ button {
   align-items: center;
   gap: var(--space-2);
   width: min(26rem, 100%);
-  height: 44px;
-  padding: 0 var(--space-3) 0 6px;
+  min-height: 44px;
+  padding: 6px var(--space-3) 4px 6px;
   border: 1px solid var(--color-border);
   border-radius: var(--radius-full);
   background: var(--color-card);
   box-shadow: var(--shadow-sm);
   transition: border-color 160ms ease, box-shadow 160ms ease;
+}
+
+.music-main {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  min-width: 0;
+  min-height: 44px;
 }
 
 .music-player:hover {
@@ -196,6 +204,10 @@ button {
   background: linear-gradient(135deg, oklch(0.68 0.12 305), oklch(0.6 0.13 335));
 }
 
+.music-cover-rose {
+  background: linear-gradient(135deg, oklch(0.72 0.14 12), oklch(0.62 0.16 348));
+}
+
 .music-info {
   display: flex;
   flex-direction: column;
@@ -226,6 +238,7 @@ button {
 .music-controls {
   display: flex;
   align-items: center;
+  height: 44px;
   gap: 2px;
 }
 
@@ -290,10 +303,27 @@ button {
 
 .music-progress {
   display: flex;
+  flex-direction: column;
+  justify-content: center;
+  flex: 1;
+  min-width: 7rem;
+}
+
+.music-progress-row {
+  display: flex;
   align-items: center;
   gap: var(--space-2);
-  flex: 1;
-  min-width: 6rem;
+  height: 44px;
+}
+
+.music-lyric {
+  height: 18px;
+  overflow: hidden;
+  color: var(--color-accent-strong);
+  font-size: 0.75rem;
+  line-height: 18px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .music-range {

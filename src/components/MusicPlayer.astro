@@ -10,51 +10,58 @@ const firstTrack = tracks[0];
   data-music-player
   aria-label="音乐播放条"
 >
-  <span class={`music-cover music-cover-${firstTrack.coverTone}`} data-music-cover aria-hidden="true">♪</span>
+  <div class="music-main">
+    <span class={`music-cover music-cover-${firstTrack.coverTone}`} data-music-cover aria-hidden="true">♪</span>
 
-  <div class="music-info">
-    <span class="music-title" data-music-title>{firstTrack.title}</span>
-    <span class="music-artist" data-music-artist>{firstTrack.artist}</span>
-  </div>
+    <div class="music-info">
+      <span class="music-title" data-music-title>{firstTrack.title}</span>
+      <span class="music-artist" data-music-artist>{firstTrack.artist}</span>
+    </div>
 
-  <div class="music-controls" role="group" aria-label="播放控制">
-    <button class="music-btn" type="button" data-music-prev disabled aria-label="上一首">
-      <svg viewBox="0 0 16 16" aria-hidden="true" fill="currentColor">
-        <path d="M3.5 3.5v9" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" />
-        <path d="M13 3.5 6.5 8l6.5 4.5z" />
-      </svg>
-    </button>
-    <button class="music-btn music-btn-play" type="button" data-music-toggle disabled aria-label="播放">
-      <svg class="icon-play" viewBox="0 0 16 16" aria-hidden="true" fill="currentColor">
-        <path d="M4.5 2.75v10.5l8.25-5.25z" />
-      </svg>
-      <svg class="icon-pause" viewBox="0 0 16 16" aria-hidden="true" fill="currentColor">
-        <rect x="3.5" y="2.75" width="3.25" height="10.5" rx="1" />
-        <rect x="9.25" y="2.75" width="3.25" height="10.5" rx="1" />
-      </svg>
-    </button>
-    <button class="music-btn" type="button" data-music-next disabled aria-label="下一首">
-      <svg viewBox="0 0 16 16" aria-hidden="true" fill="currentColor">
-        <path d="M12.5 3.5v9" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" />
-        <path d="M3 3.5 9.5 8 3 12.5z" />
-      </svg>
-    </button>
+    <div class="music-controls" role="group" aria-label="播放控制">
+      <button class="music-btn" type="button" data-music-prev disabled aria-label="上一首">
+        <svg viewBox="0 0 16 16" aria-hidden="true" fill="currentColor">
+          <path d="M3.5 3.5v9" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" />
+          <path d="M13 3.5 6.5 8l6.5 4.5z" />
+        </svg>
+      </button>
+      <button class="music-btn music-btn-play" type="button" data-music-toggle disabled aria-label="播放">
+        <svg class="icon-play" viewBox="0 0 16 16" aria-hidden="true" fill="currentColor">
+          <path d="M4.5 2.75v10.5l8.25-5.25z" />
+        </svg>
+        <svg class="icon-pause" viewBox="0 0 16 16" aria-hidden="true" fill="currentColor">
+          <rect x="3.5" y="2.75" width="3.25" height="10.5" rx="1" />
+          <rect x="9.25" y="2.75" width="3.25" height="10.5" rx="1" />
+        </svg>
+      </button>
+      <button class="music-btn" type="button" data-music-next disabled aria-label="下一首">
+        <svg viewBox="0 0 16 16" aria-hidden="true" fill="currentColor">
+          <path d="M12.5 3.5v9" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" />
+          <path d="M3 3.5 9.5 8 3 12.5z" />
+        </svg>
+      </button>
+    </div>
   </div>
 
   <div class="music-progress">
-    <input
-      class="music-range"
-      type="range"
-      min="0"
-      max="0"
-      step="0.1"
-      value="0"
-      data-music-range
-      disabled
-      aria-label="播放进度"
-      aria-valuetext="0:00 / 0:00"
-    />
-    <span class="music-time" data-music-time>0:00 / 0:00</span>
+    <span class="music-lyric" data-music-lyric aria-live="polite">
+      {firstTrack.lyrics?.[0]?.text ?? '暂无歌词'}
+    </span>
+    <div class="music-progress-row">
+      <input
+        class="music-range"
+        type="range"
+        min="0"
+        max="0"
+        step="0.1"
+        value="0"
+        data-music-range
+        disabled
+        aria-label="播放进度"
+        aria-valuetext="0:00 / 0:00"
+      />
+      <span class="music-time" data-music-time>0:00 / 0:00</span>
+    </div>
   </div>
 
   <audio data-music-audio src={firstTrack.src} preload="metadata"></audio>
@@ -86,8 +93,9 @@ const firstTrack = tracks[0];
     const toggleButton = root.querySelector<HTMLButtonElement>('[data-music-toggle]');
     const range = root.querySelector<HTMLInputElement>('[data-music-range]');
     const timeEl = root.querySelector<HTMLElement>('[data-music-time]');
+    const lyricEl = root.querySelector<HTMLElement>('[data-music-lyric]');
 
-    if (!audio || !cover || !titleEl || !artistEl || !prevButton || !nextButton || !toggleButton || !range || !timeEl) {
+    if (!audio || !cover || !titleEl || !artistEl || !prevButton || !nextButton || !toggleButton || !range || !timeEl || !lyricEl) {
       return;
     }
 
@@ -130,6 +138,19 @@ const firstTrack = tracks[0];
       }
     }
 
+    function updateLyric(current: number): void {
+      const lines = tracks[currentIndex].lyrics ?? [];
+      let text = '暂无歌词';
+      for (const line of lines) {
+        if (current >= line.time) {
+          text = line.text;
+        } else {
+          break;
+        }
+      }
+      lyricEl.textContent = text;
+    }
+
     function renderTrack(index: number): void {
       const track = tracks[index];
       titleEl.textContent = track.title;
@@ -139,6 +160,7 @@ const firstTrack = tracks[0];
       audio.src = track.src;
       range.value = '0';
       timeEl.textContent = '0:00 / 0:00';
+      updateLyric(0);
       saveState();
     }
 
@@ -194,6 +216,7 @@ const firstTrack = tracks[0];
       const label = `${formatTime(current)} / ${formatTime(duration)}`;
       timeEl.textContent = label;
       range.setAttribute('aria-valuetext', label);
+      updateLyric(current);
     }
 
     audio.addEventListener('loadedmetadata', () => {
@@ -207,6 +230,15 @@ const firstTrack = tracks[0];
     });
 
     audio.addEventListener('timeupdate', updateProgress);
+
+    audio.addEventListener('error', () => {
+      setPlaying(false);
+      lyricEl.textContent = '音频待补充';
+      timeEl.textContent = '0:00 / 0:00';
+      range.value = '0';
+      range.max = '0';
+      range.style.setProperty('--range-progress', '0%');
+    });
 
     audio.addEventListener('ended', () => {
       if (currentIndex < tracks.length - 1) {
@@ -229,6 +261,7 @@ const firstTrack = tracks[0];
         audio.currentTime = value;
         range.style.setProperty('--range-progress', `${(value / max) * 100}%`);
         timeEl.textContent = `${formatTime(value)} / ${formatTime(audio.duration)}`;
+        updateLyric(value);
       }
     });
 
