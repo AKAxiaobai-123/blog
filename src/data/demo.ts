@@ -4,6 +4,8 @@ export interface DemoCard {
   description: string;
   detail: string;
   accent: string;
+  visual: string;
+  imageAlt: string;
 }
 
 export const demoCards: DemoCard[] = [
@@ -13,6 +15,8 @@ export const demoCards: DemoCard[] = [
     description: '把一闪而过的想法收进卡片。',
     detail: '这是年轻风格演示卡片：以后可以放专题入口、作品集，或者任何想让人一眼看到的内容。',
     accent: 'coral',
+    visual: 'rays',
+    imageAlt: '灵感速记卡片的放射纹理占位视觉',
   },
   {
     id: 'playlist',
@@ -20,6 +24,8 @@ export const demoCards: DemoCard[] = [
     description: '记录循环播放的那几首歌。',
     detail: '演示内容：这里可以放歌单、播客或书影音清单，点开卡片就能看到详细列表。',
     accent: 'amber',
+    visual: 'waves',
+    imageAlt: '最近在听卡片的波浪纹理占位视觉',
   },
   {
     id: 'build',
@@ -27,6 +33,8 @@ export const demoCards: DemoCard[] = [
     description: '把进行中的小项目摆出来。',
     detail: '演示内容：适合展示 side project 的进展、截图和链接，后续可以替换成真实项目。',
     accent: 'green',
+    visual: 'blocks',
+    imageAlt: '正在构建卡片的网格纹理占位视觉',
   },
   {
     id: 'notes',
@@ -34,6 +42,8 @@ export const demoCards: DemoCard[] = [
     description: '不整理就很舒服的碎片记录。',
     detail: '演示内容：这里可以放短篇随笔、摘抄或灵感碎片，之后再决定它的最终形态。',
     accent: 'blue',
+    visual: 'lines',
+    imageAlt: '随手笔记卡片的线条纹理占位视觉',
   },
   {
     id: 'travel',
@@ -41,5 +51,7 @@ export const demoCards: DemoCard[] = [
     description: '给下一次出发留个位置。',
     detail: '演示内容：可以放旅行计划、城市清单或照片集，用来验证卡片展开后的阅读体验。',
     accent: 'violet',
+    visual: 'map',
+    imageAlt: '想去的地方卡片的地图网格占位视觉',
   },
 ];

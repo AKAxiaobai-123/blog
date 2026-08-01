@@ -10,7 +10,7 @@ const pad = (index: number) => String(index + 1).padStart(2, '0');
     <div>
       <p class="eyebrow">第一章 · 今天的一层</p>
       <h2 id="demo-heading" class="demo-heading">把今天，叠成一张卡片</h2>
-      <p class="demo-intro">鼠标在卡片上划过，光会跟着视线走；点击任意一层，就能翻开里面的内容。</p>
+      <p class="demo-intro">用下面的缩略图切换卡片，翻开每一层里的内容。</p>
     </div>
   </div>
 
@@ -19,29 +19,54 @@ const pad = (index: number) => String(index + 1).padStart(2, '0');
       {
         cards.map((card, index) => (
           <li
-            class="deck-item"
+            class={index === 0 ? 'deck-item is-active' : 'deck-item'}
             data-deck-item
-            style={`--deck-order: ${index}; --deck-z: ${12 - index}; --deck-shift: ${index * 12}px; --deck-scale: ${1 - index * 0.025}`}
+            data-index={index}
           >
-            <details class="deck-card" name="demo-card">
-              <summary class="demo-summary">
-                <span class={`demo-accent demo-accent-${card.accent}`} aria-hidden="true"></span>
+            <article class="deck-card">
+              <div
+                class={`demo-visual demo-accent-${card.accent} demo-visual-${card.visual}`}
+                role="img"
+                aria-label={card.imageAlt}
+              >
+                <span class="demo-visual-badge">DEMO</span>
+              </div>
+              <div class="demo-copy">
                 <span class="demo-index">{pad(index)}</span>
                 <h3 class="demo-title">{card.title}</h3>
                 <p class="demo-description">{card.description}</p>
-                <span class="demo-toggle">翻开这一层</span>
-              </summary>
-              <div class="demo-detail">
-                <p>{card.detail}</p>
+                <details class="demo-details" name="demo-card">
+                  <summary class="demo-toggle">展开详情</summary>
+                  <p>{card.detail}</p>
+                </details>
               </div>
-            </details>
+            </article>
           </li>
         ))
       }
     </ul>
   </div>
 
-  <p class="deck-hint">移动鼠标，让光跟着视线走。</p>
+  <ul class="deck-thumbs" data-deck-thumbs aria-label="切换演示卡片">
+    {
+      cards.map((card, index) => (
+        <li>
+          <button
+            class={index === 0 ? 'deck-thumb is-active' : 'deck-thumb'}
+            type="button"
+            data-deck-thumb
+            aria-pressed={index === 0 ? 'true' : 'false'}
+            aria-label={`切换到：${card.title}`}
+          >
+            <span class={`thumb-visual demo-accent-${card.accent}`} aria-hidden="true"></span>
+            <span class="thumb-label">{pad(index)}</span>
+          </button>
+        </li>
+      ))
+    }
+  </ul>
+
+  <p class="deck-hint">点击或悬停缩略图切换卡片。</p>
 </section>
 
 <script is:inline>
@@ -49,43 +74,44 @@ const pad = (index: number) => String(index + 1).padStart(2, '0');
     const root = document.querySelector('[data-deck]');
     if (!root) return;
 
-    const stage = root.querySelector('[data-deck-stage]');
     const items = Array.from(root.querySelectorAll('[data-deck-item]'));
-    if (!(stage instanceof HTMLElement) || items.length === 0) return;
-    if (!window.matchMedia('(hover: hover)').matches) return;
+    const thumbs = Array.from(root.querySelectorAll('[data-deck-thumb]'));
+    if (items.length === 0 || thumbs.length === 0) return;
 
     document.documentElement.classList.add('js');
 
-    let raf = 0;
-
-    const setFocus = (clientX, clientY) => {
-      const rect = stage.getBoundingClientRect();
-      const x = Math.min(1, Math.max(0, (clientX - rect.left) / rect.width));
-      const y = Math.min(1, Math.max(0, (clientY - rect.top) / rect.height));
-      const index = Math.min(items.length - 1, Math.max(0, Math.floor(x * items.length)));
-      stage.style.setProperty('--deck-x', `${x * 100}%`);
-      stage.style.setProperty('--deck-y', `${y * 100}%`);
+    const render = (index) => {
       items.forEach((item, i) => {
-        item.classList.toggle('is-focused', i === index);
-        item.classList.toggle('is-adjacent', Math.abs(i - index) === 1);
+        const back = (i - index + items.length) % items.length;
+        item.classList.toggle('is-active', i === index);
+        item.style.zIndex = i === index ? '30' : String(20 - back);
+        item.style.opacity = i === index ? '1' : String(Math.max(0.42, 1 - back * 0.16));
+
+        if (i === index) {
+          item.style.transform = 'none';
+          return;
+        }
+
+        const direction = i < index ? -1 : 1;
+        item.style.transform =
+          `perspective(1100px) rotateY(${direction * 3}deg) rotateX(2.5deg) ` +
+          `translate(${back * 26}px, ${back * 16}px) ` +
+          `scale(${Math.max(0.86, 1 - back * 0.05)})`;
+      });
+
+      thumbs.forEach((thumb, i) => {
+        thumb.classList.toggle('is-active', i === index);
+        thumb.setAttribute('aria-pressed', String(i === index));
       });
     };
 
-    const onMove = (event) => {
-      if (raf) return;
-      raf = window.requestAnimationFrame(() => {
-        raf = 0;
-        setFocus(event.clientX, event.clientY);
-      });
-    };
+    thumbs.forEach((thumb, i) => {
+      thumb.addEventListener('click', () => render(i));
+      if (window.matchMedia('(hover: hover)').matches) {
+        thumb.addEventListener('mouseenter', () => render(i));
+      }
+    });
 
-    const onLeave = () => {
-      if (raf) window.cancelAnimationFrame(raf);
-      raf = 0;
-      items.forEach((item) => item.classList.remove('is-focused', 'is-adjacent'));
-    };
-
-    stage.addEventListener('mousemove', onMove);
-    stage.addEventListener('mouseleave', onLeave);
+    render(0);
   })();
 </script>
