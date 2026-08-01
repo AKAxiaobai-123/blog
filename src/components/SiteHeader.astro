@@ -1,4 +1,6 @@
 ---
+import MusicPlayer from './MusicPlayer.astro';
+
 const pathname = Astro.url.pathname;
 
 const links = [
@@ -29,9 +31,12 @@ function isActive(href: string): boolean {
         ))
       }
     </nav>
-    <button class="theme-toggle" type="button" data-theme-toggle>
-      <span data-theme-label>深色模式</span>
-    </button>
+    <div class="site-header-actions">
+      <MusicPlayer />
+      <button class="theme-toggle" type="button" data-theme-toggle>
+        <span data-theme-label>深色模式</span>
+      </button>
+    </div>
   </div>
 </header>
 
