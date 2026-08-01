@@ -1,5 +1,6 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import LeftPanel from '../components/LeftPanel.astro';
 import SidePanel from '../components/SidePanel.astro';
 import { getAllPosts, formatDate } from '../lib/posts';
 
@@ -24,6 +25,8 @@ const groups = [...years.entries()].sort((a, b) => b[0].localeCompare(a[0]));
 
   <div class="container">
     <div class="content-grid">
+      <LeftPanel />
+
       <section class="page-section content-main">
         <div class="archive-filter" data-archive-filter hidden>
           <p>

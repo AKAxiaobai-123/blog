@@ -1,5 +1,6 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import LeftPanel from '../../components/LeftPanel.astro';
 import PostCard from '../../components/PostCard.astro';
 import SidePanel from '../../components/SidePanel.astro';
 import { getAllPosts } from '../../lib/posts';
@@ -15,6 +16,8 @@ const posts = await getAllPosts();
 
   <div class="container">
     <div class="content-grid">
+      <LeftPanel />
+
       <section class="page-section content-main">
         {
           posts.length > 0 ? (

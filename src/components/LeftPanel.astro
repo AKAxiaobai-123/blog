@@ -1,0 +1,46 @@
+---
+const links = [
+  { href: '/posts/', label: '文章' },
+  { href: '/archive/', label: '归档' },
+  { href: '/about/', label: '关于' },
+  { href: '/rss.xml', label: 'RSS' },
+];
+---
+
+<aside class="left-panel" aria-label="作者与站点信息">
+  <section class="side-card author-card">
+    <div class="author-avatar" aria-hidden="true">A</div>
+    <h2 class="author-name">AKAxiaobai-123</h2>
+    <p class="author-bio">记录技术、生活与零碎日常，把日子一层层叠起来。</p>
+    <div class="author-links">
+      <a href="/about/">关于</a>
+      <a href="https://github.com/AKAxiaobai-123" rel="me" target="_blank">GitHub</a>
+    </div>
+  </section>
+
+  <section class="side-card">
+    <h2 class="side-title">公告</h2>
+    <div class="announcement-body">
+      <p>欢迎来到博客，这里正在慢慢长出新的内容。</p>
+      <a class="announcement-link" href="/about/">了解更多</a>
+    </div>
+  </section>
+
+  <section class="side-card">
+    <h2 class="side-title">快捷导航</h2>
+    <nav aria-label="快捷导航">
+      <ul class="quick-nav">
+        {
+          links.map((link) => (
+            <li>
+              <a href={link.href}>
+                <span>{link.label}</span>
+                <span aria-hidden="true">→</span>
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </nav>
+  </section>
+</aside>
