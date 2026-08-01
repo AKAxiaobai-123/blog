@@ -65,7 +65,7 @@ export const musicTracks: MusicTrack[] = [
       { time: 16.5, text: '月亮替我说晚安' },
     ],
   },
-  // 音频与歌词文件由站点所有者提供后放入 public/music/zhang-jia-ming-he-wan-jun.mp3。
+  // 音频已由站点所有者提供；歌词请在取得授权后填入 lyrics。
   {
     id: 'zhang-jia-ming-he-wan-jun',
     title: '张家明和婉君',

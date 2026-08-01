@@ -151,6 +151,8 @@ button {
   align-items: center;
   gap: var(--space-2);
   width: min(26rem, 100%);
+  max-width: 26rem;
+  min-width: 0;
   min-height: 44px;
   padding: 6px var(--space-3) 4px 6px;
   border: 1px solid var(--color-border);
@@ -165,6 +167,7 @@ button {
   align-items: center;
   gap: var(--space-2);
   min-width: 0;
+  overflow: hidden;
   min-height: 44px;
 }
 
@@ -306,7 +309,8 @@ button {
   flex-direction: column;
   justify-content: center;
   flex: 1;
-  min-width: 7rem;
+  min-width: 6rem;
+  overflow: hidden;
 }
 
 .music-progress-row {

@@ -9,6 +9,6 @@
 - `lazy-afternoon.wav`：G 六和弦铺底
 - `night-walk.wav`：D 小调九和弦铺底
 
-歌单中的《张家明和婉君》（李荣浩）需要自行放入授权音频
-`zhang-jia-ming-he-wan-jun.mp3`，并在 `src/data/music.ts` 中补充你有权使用的歌词；
-在音频与歌词就位前，播放器会显示“音频待补充”。
+歌单中的《张家明和婉君》（李荣浩）音频文件已放入
+`zhang-jia-ming-he-wan-jun.mp3`；歌词请在取得授权后补充到
+`src/data/music.ts` 的对应 `lyrics` 字段。
