@@ -10,44 +10,41 @@ const firstTrack = tracks[0];
   data-music-player
   aria-label="音乐播放条"
 >
-  <div class="music-main">
-    <span class={`music-cover music-cover-${firstTrack.coverTone}`} data-music-cover aria-hidden="true">♪</span>
+  <div class="music-player-row">
+    <div class="music-main">
+      <span class={`music-cover music-cover-${firstTrack.coverTone}`} data-music-cover aria-hidden="true">♪</span>
 
-    <div class="music-info">
-      <span class="music-title" data-music-title>{firstTrack.title}</span>
-      <span class="music-artist" data-music-artist>{firstTrack.artist}</span>
+      <div class="music-info">
+        <span class="music-title" data-music-title>{firstTrack.title}</span>
+        <span class="music-artist" data-music-artist>{firstTrack.artist}</span>
+      </div>
+
+      <div class="music-controls" role="group" aria-label="播放控制">
+        <button class="music-btn" type="button" data-music-prev disabled aria-label="上一首">
+          <svg viewBox="0 0 16 16" aria-hidden="true" fill="currentColor">
+            <path d="M3.5 3.5v9" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" />
+            <path d="M13 3.5 6.5 8l6.5 4.5z" />
+          </svg>
+        </button>
+        <button class="music-btn music-btn-play" type="button" data-music-toggle disabled aria-label="播放">
+          <svg class="icon-play" viewBox="0 0 16 16" aria-hidden="true" fill="currentColor">
+            <path d="M4.5 2.75v10.5l8.25-5.25z" />
+          </svg>
+          <svg class="icon-pause" viewBox="0 0 16 16" aria-hidden="true" fill="currentColor">
+            <rect x="3.5" y="2.75" width="3.25" height="10.5" rx="1" />
+            <rect x="9.25" y="2.75" width="3.25" height="10.5" rx="1" />
+          </svg>
+        </button>
+        <button class="music-btn" type="button" data-music-next disabled aria-label="下一首">
+          <svg viewBox="0 0 16 16" aria-hidden="true" fill="currentColor">
+            <path d="M12.5 3.5v9" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" />
+            <path d="M3 3.5 9.5 8 3 12.5z" />
+          </svg>
+        </button>
+      </div>
     </div>
 
-    <div class="music-controls" role="group" aria-label="播放控制">
-      <button class="music-btn" type="button" data-music-prev disabled aria-label="上一首">
-        <svg viewBox="0 0 16 16" aria-hidden="true" fill="currentColor">
-          <path d="M3.5 3.5v9" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" />
-          <path d="M13 3.5 6.5 8l6.5 4.5z" />
-        </svg>
-      </button>
-      <button class="music-btn music-btn-play" type="button" data-music-toggle disabled aria-label="播放">
-        <svg class="icon-play" viewBox="0 0 16 16" aria-hidden="true" fill="currentColor">
-          <path d="M4.5 2.75v10.5l8.25-5.25z" />
-        </svg>
-        <svg class="icon-pause" viewBox="0 0 16 16" aria-hidden="true" fill="currentColor">
-          <rect x="3.5" y="2.75" width="3.25" height="10.5" rx="1" />
-          <rect x="9.25" y="2.75" width="3.25" height="10.5" rx="1" />
-        </svg>
-      </button>
-      <button class="music-btn" type="button" data-music-next disabled aria-label="下一首">
-        <svg viewBox="0 0 16 16" aria-hidden="true" fill="currentColor">
-          <path d="M12.5 3.5v9" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" />
-          <path d="M3 3.5 9.5 8 3 12.5z" />
-        </svg>
-      </button>
-    </div>
-  </div>
-
-  <div class="music-progress" id="music-panel">
-    <span class="music-lyric" data-music-lyric aria-live="polite">
-      {firstTrack.lyrics?.[0]?.text ?? '暂无歌词'}
-    </span>
-    <div class="music-progress-row">
+    <div class="music-progress">
       <input
         class="music-range"
         type="range"
@@ -61,26 +58,28 @@ const firstTrack = tracks[0];
         aria-valuetext="0:00 / 0:00"
       />
       <span class="music-time" data-music-time>0:00 / 0:00</span>
-      <button
-        class="music-btn music-expand-btn"
-        type="button"
-        data-music-expand
-        disabled
-        aria-expanded="false"
-        aria-controls="music-panel"
-        aria-label="展开歌词与进度"
-      >
-        <svg class="icon-expand" viewBox="0 0 16 16" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M4 9V4h5" />
-          <path d="M12 7v5H7" />
-          <path d="M4 4l5 5M12 7 7 12" />
-        </svg>
-        <svg class="icon-collapse" viewBox="0 0 16 16" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M4 7h5V4" />
-          <path d="M12 9H7v5" />
-          <path d="M9 4 4 9M12 12 7 7" />
-        </svg>
-      </button>
+    </div>
+
+    <button
+      class="music-btn music-expand-btn"
+      type="button"
+      data-music-expand
+      disabled
+      aria-expanded="false"
+      aria-controls="music-lyrics-panel"
+      aria-label="展开歌词"
+    >
+      <svg class="icon-chevron" viewBox="0 0 16 16" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M6 3.5 10.5 8 6 12.5" />
+      </svg>
+    </button>
+  </div>
+
+  <div class="music-lyrics-panel" id="music-lyrics-panel" data-music-lyrics-panel>
+    <div class="music-lyrics-inner">
+      <span class="music-lyric" data-music-lyric aria-live="polite">
+        {firstTrack.lyrics?.[0]?.text ?? '暂无歌词'}
+      </span>
     </div>
   </div>
 
@@ -213,7 +212,7 @@ const firstTrack = tracks[0];
     function toggleExpand(): void {
       const expanded = root.classList.toggle('is-expanded');
       expandButton.setAttribute('aria-expanded', String(expanded));
-      expandButton.setAttribute('aria-label', expanded ? '收起歌词与进度' : '展开歌词与进度');
+      expandButton.setAttribute('aria-label', expanded ? '收起歌词' : '展开歌词');
     }
 
     function loadTrack(index: number, autoplay: boolean): void {
