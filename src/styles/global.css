@@ -150,8 +150,8 @@ button {
   display: flex;
   align-items: center;
   gap: var(--space-2);
-  width: min(26rem, 100%);
-  max-width: 26rem;
+  width: min(406px, 100%);
+  max-width: 406px;
   min-width: 0;
   min-height: 44px;
   padding: 6px var(--space-3) 4px 6px;
@@ -309,8 +309,7 @@ button {
   flex-direction: column;
   justify-content: center;
   flex: 1;
-  min-width: 6rem;
-  overflow: hidden;
+  min-width: 0;
 }
 
 .music-progress-row {
@@ -321,6 +320,8 @@ button {
 }
 
 .music-lyric {
+  display: block;
+  width: 100%;
   height: 18px;
   overflow: hidden;
   color: var(--color-accent-strong);
@@ -328,6 +329,31 @@ button {
   line-height: 18px;
   text-overflow: ellipsis;
   white-space: nowrap;
+  transform-origin: left center;
+  transition: transform 220ms ease, font-size 220ms ease;
+}
+
+.music-progress-row,
+.music-time {
+  transition: transform 220ms ease, font-size 220ms ease;
+}
+
+.music-expand-btn {
+  flex: 0 0 auto;
+}
+
+.music-player:not(.is-expanded) .icon-collapse,
+.music-player.is-expanded .icon-expand {
+  display: none;
+}
+
+.music-player.is-expanded .music-lyric {
+  transform: scale(1.05);
+  font-size: 0.8125rem;
+}
+
+.music-player.is-expanded .music-progress-row {
+  transform: scale(1.02);
 }
 
 .music-range {
@@ -442,6 +468,14 @@ button {
 
   .music-progress {
     min-width: 5rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .music-lyric,
+  .music-progress-row,
+  .music-time {
+    transition: none;
   }
 }
 
