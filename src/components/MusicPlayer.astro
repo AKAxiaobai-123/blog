@@ -5,46 +5,39 @@ const tracks = musicTracks;
 const firstTrack = tracks[0];
 ---
 
-<section
-  class="music-player"
-  data-music-player
-  aria-label="音乐播放条"
->
-  <div class="music-player-row">
-    <div class="music-main">
-      <span class={`music-cover music-cover-${firstTrack.coverTone}`} data-music-cover aria-hidden="true">♪</span>
+<section class="music-popover" data-music-player>
+  <button
+    class="music-trigger"
+    type="button"
+    data-music-trigger
+    disabled
+    aria-expanded="false"
+    aria-controls="music-popover-panel"
+    aria-label="打开音乐播放器"
+  >
+    <svg viewBox="0 0 24 24" aria-hidden="true">
+      <path d="M9 18.5V5.2l10-2.3v13.1" />
+      <circle cx="6.5" cy="18.5" r="2.5" />
+      <circle cx="16.5" cy="16" r="2.5" />
+    </svg>
+  </button>
 
+  <div class="music-popover-panel" id="music-popover-panel" data-music-popover>
+    <div class="music-popover-head">
+      <span class={`music-cover music-cover-${firstTrack.coverTone}`} data-music-cover aria-hidden="true">♪</span>
       <div class="music-info">
         <span class="music-title" data-music-title>{firstTrack.title}</span>
         <span class="music-artist" data-music-artist>{firstTrack.artist}</span>
       </div>
-
-      <div class="music-controls" role="group" aria-label="播放控制">
-        <button class="music-btn" type="button" data-music-prev disabled aria-label="上一首">
-          <svg viewBox="0 0 16 16" aria-hidden="true" fill="currentColor">
-            <path d="M3.5 3.5v9" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" />
-            <path d="M13 3.5 6.5 8l6.5 4.5z" />
-          </svg>
-        </button>
-        <button class="music-btn music-btn-play" type="button" data-music-toggle disabled aria-label="播放">
-          <svg class="icon-play" viewBox="0 0 16 16" aria-hidden="true" fill="currentColor">
-            <path d="M4.5 2.75v10.5l8.25-5.25z" />
-          </svg>
-          <svg class="icon-pause" viewBox="0 0 16 16" aria-hidden="true" fill="currentColor">
-            <rect x="3.5" y="2.75" width="3.25" height="10.5" rx="1" />
-            <rect x="9.25" y="2.75" width="3.25" height="10.5" rx="1" />
-          </svg>
-        </button>
-        <button class="music-btn" type="button" data-music-next disabled aria-label="下一首">
-          <svg viewBox="0 0 16 16" aria-hidden="true" fill="currentColor">
-            <path d="M12.5 3.5v9" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" />
-            <path d="M3 3.5 9.5 8 3 12.5z" />
-          </svg>
-        </button>
-      </div>
     </div>
 
-    <div class="music-progress">
+    <div class="music-popover-lyric">
+      <span class="music-lyric" data-music-lyric aria-live="polite">
+        {firstTrack.lyrics?.[0]?.text ?? '暂无歌词'}
+      </span>
+    </div>
+
+    <div class="music-popover-progress">
       <input
         class="music-range"
         type="range"
@@ -60,26 +53,28 @@ const firstTrack = tracks[0];
       <span class="music-time" data-music-time>0:00 / 0:00</span>
     </div>
 
-    <button
-      class="music-btn music-expand-btn"
-      type="button"
-      data-music-expand
-      disabled
-      aria-expanded="false"
-      aria-controls="music-lyrics-panel"
-      aria-label="展开歌词"
-    >
-      <svg class="icon-chevron" viewBox="0 0 16 16" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-        <path d="M6 3.5 10.5 8 6 12.5" />
-      </svg>
-    </button>
-  </div>
-
-  <div class="music-lyrics-panel" id="music-lyrics-panel" data-music-lyrics-panel>
-    <div class="music-lyrics-inner">
-      <span class="music-lyric" data-music-lyric aria-live="polite">
-        {firstTrack.lyrics?.[0]?.text ?? '暂无歌词'}
-      </span>
+    <div class="music-controls" role="group" aria-label="播放控制">
+      <button class="music-btn" type="button" data-music-prev disabled aria-label="上一首">
+        <svg viewBox="0 0 16 16" aria-hidden="true" fill="currentColor">
+          <path d="M3.5 3.5v9" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" />
+          <path d="M13 3.5 6.5 8l6.5 4.5z" />
+        </svg>
+      </button>
+      <button class="music-btn music-btn-play" type="button" data-music-toggle disabled aria-label="播放">
+        <svg class="icon-play" viewBox="0 0 16 16" aria-hidden="true" fill="currentColor">
+          <path d="M4.5 2.75v10.5l8.25-5.25z" />
+        </svg>
+        <svg class="icon-pause" viewBox="0 0 16 16" aria-hidden="true" fill="currentColor">
+          <rect x="3.5" y="2.75" width="3.25" height="10.5" rx="1" />
+          <rect x="9.25" y="2.75" width="3.25" height="10.5" rx="1" />
+        </svg>
+      </button>
+      <button class="music-btn" type="button" data-music-next disabled aria-label="下一首">
+        <svg viewBox="0 0 16 16" aria-hidden="true" fill="currentColor">
+          <path d="M12.5 3.5v9" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" />
+          <path d="M3 3.5 9.5 8 3 12.5z" />
+        </svg>
+      </button>
     </div>
   </div>
 
@@ -103,6 +98,7 @@ const firstTrack = tracks[0];
     const root = document.querySelector<HTMLElement>('[data-music-player]');
     if (!root) return;
 
+    const trigger = root.querySelector<HTMLButtonElement>('[data-music-trigger]');
     const audio = root.querySelector<HTMLAudioElement>('[data-music-audio]');
     const cover = root.querySelector<HTMLElement>('[data-music-cover]');
     const titleEl = root.querySelector<HTMLElement>('[data-music-title]');
@@ -113,9 +109,8 @@ const firstTrack = tracks[0];
     const range = root.querySelector<HTMLInputElement>('[data-music-range]');
     const timeEl = root.querySelector<HTMLElement>('[data-music-time]');
     const lyricEl = root.querySelector<HTMLElement>('[data-music-lyric]');
-    const expandButton = root.querySelector<HTMLButtonElement>('[data-music-expand]');
 
-    if (!audio || !cover || !titleEl || !artistEl || !prevButton || !nextButton || !toggleButton || !range || !timeEl || !lyricEl || !expandButton) {
+    if (!trigger || !audio || !cover || !titleEl || !artistEl || !prevButton || !nextButton || !toggleButton || !range || !timeEl || !lyricEl) {
       return;
     }
 
@@ -209,12 +204,6 @@ const firstTrack = tracks[0];
       }
     }
 
-    function toggleExpand(): void {
-      const expanded = root.classList.toggle('is-expanded');
-      expandButton.setAttribute('aria-expanded', String(expanded));
-      expandButton.setAttribute('aria-label', expanded ? '收起歌词' : '展开歌词');
-    }
-
     function loadTrack(index: number, autoplay: boolean): void {
       const nextIndex = (index + tracks.length) % tracks.length;
       if (nextIndex === currentIndex && autoplay) {
@@ -244,6 +233,24 @@ const firstTrack = tracks[0];
       range.setAttribute('aria-valuetext', label);
       updateLyric(current);
     }
+
+    function setOpen(open: boolean): void {
+      root.classList.toggle('is-open', open);
+      trigger.setAttribute('aria-expanded', String(open));
+      trigger.setAttribute('aria-label', open ? '关闭音乐播放器' : '打开音乐播放器');
+    }
+
+    trigger.addEventListener('click', () => setOpen(!root.classList.contains('is-open')));
+    document.addEventListener('click', (event) => {
+      if (root.classList.contains('is-open') && !root.contains(event.target as Node)) {
+        setOpen(false);
+      }
+    });
+    document.addEventListener('keydown', (event) => {
+      if (event.key === 'Escape') {
+        setOpen(false);
+      }
+    });
 
     audio.addEventListener('loadedmetadata', () => {
       if (pendingTime !== null) {
@@ -279,7 +286,6 @@ const firstTrack = tracks[0];
     prevButton.addEventListener('click', () => loadTrack(currentIndex - 1, true));
     nextButton.addEventListener('click', () => loadTrack(currentIndex + 1, true));
     toggleButton.addEventListener('click', togglePlay);
-    expandButton.addEventListener('click', toggleExpand);
 
     range.addEventListener('input', () => {
       const value = Number(range.value);
@@ -303,10 +309,10 @@ const firstTrack = tracks[0];
     }
 
     root.dataset.enabled = 'true';
+    trigger.disabled = false;
     prevButton.disabled = false;
     nextButton.disabled = false;
     toggleButton.disabled = false;
-    expandButton.disabled = false;
     range.disabled = false;
   })();
 </script>
